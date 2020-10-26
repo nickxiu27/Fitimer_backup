@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Fitimer</string>
+    <string name="timer_place_holder">88</string>
 </resources>
