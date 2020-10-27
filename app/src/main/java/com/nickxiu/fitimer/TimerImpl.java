@@ -1,22 +1,24 @@
 package com.nickxiu.fitimer;
 
-import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TimerImpl implements BaseTimerInterface {
+public class TimerImpl extends Fragment implements BaseTimerInterface {
     private static final String TAG = "TimerImpl";
     private static final int UNIT = 60;
 
-    private final Context mContext;
-    private final View mView;
-    private final TextView mMinuteTextView;
-    private final TextView mSecondTextView;
+    private ViewGroup viewGroup;
+    private TextView minuteTextView;
+    private TextView secondTextView;
 
     private boolean isRunning = false;
     private int currentTextViewSeconds = 0;
@@ -29,14 +31,16 @@ public class TimerImpl implements BaseTimerInterface {
     // This keeps track of the total time of all running segments.
     private long cumulativeRunningTime = 0;
 
-    public TimerImpl(Context context, View view) {
-        mContext = context;
-        mView = view;
-        mMinuteTextView = view.findViewById(R.id.minute_text_view);
-        mSecondTextView = view.findViewById(R.id.second_text_view);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        viewGroup = (ViewGroup) inflater.inflate(
+                R.layout.timer_view, container, false);
+        minuteTextView = viewGroup.findViewById(R.id.minute_text_view);
+        secondTextView = viewGroup.findViewById(R.id.second_text_view);
 
         setEventTrackers();
-
+        return viewGroup;
     }
 
     @Override
@@ -75,12 +79,12 @@ public class TimerImpl implements BaseTimerInterface {
     }
 
     private void setTextView() {
-        mSecondTextView.setText(String.format(Locale.US, "%02d", currentTextViewSeconds % UNIT));
-        mMinuteTextView.setText(String.format(Locale.US, "%02d", currentTextViewSeconds / UNIT % UNIT));
+        secondTextView.setText(String.format(Locale.US, "%02d", currentTextViewSeconds % UNIT));
+        minuteTextView.setText(String.format(Locale.US, "%02d", currentTextViewSeconds / UNIT % UNIT));
     }
 
     private void setEventTrackers() {
-        mView.setOnClickListener(new View.OnClickListener() {
+        viewGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isRunning) {
@@ -91,7 +95,7 @@ public class TimerImpl implements BaseTimerInterface {
             }
         });
 
-        mView.setOnLongClickListener(new View.OnLongClickListener() {
+        viewGroup.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 reset();

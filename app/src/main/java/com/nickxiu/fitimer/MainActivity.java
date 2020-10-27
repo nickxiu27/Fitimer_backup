@@ -1,9 +1,9 @@
 package com.nickxiu.fitimer;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,10 +14,29 @@ public class MainActivity extends AppCompatActivity {
         hideStatusBar();
 
         // FrameLayout mainContainer = findViewById(R.id.main_container);
-        View.inflate(this, R.layout.timer_view, (ViewGroup) findViewById(R.id.main_container));
-        new TimerImpl(this, findViewById(R.id.timer_view));
+        // View.inflate(this, R.layout.timer_view, (ViewGroup) findViewById(R.id.main_container));
+        // View.inflate(this, R.layout.activity_screen_slide, (ViewGroup) findViewById(R.id.main_container));
+        // View.inflate(this, R.layout.slide_page_1, (ViewGroup) findViewById(R.id.main_container));
+        // View.inflate(this, R.layout.slide_page_2, (ViewGroup) findViewById(R.id.main_container));
+        // new TimerImpl(this, findViewById(R.id.timer_view));
         // Removing nav bar according to new design
         // View.inflate(this, R.layout.nav_bar, (ViewGroup) findViewById(R.id.nav_bar_container));
+
+        ViewPager viewPager
+                = findViewById(
+                R.id.view_pager);
+
+        // Create an adapter that
+        // knows which fragment should
+        // be shown on each page
+        TimerFragmentPagerAdapter
+                adapter
+                = new TimerFragmentPagerAdapter(
+                getSupportFragmentManager());
+
+        // Set the adapter onto
+        // the view pager
+        viewPager.setAdapter(adapter);
     }
 
     @Override
