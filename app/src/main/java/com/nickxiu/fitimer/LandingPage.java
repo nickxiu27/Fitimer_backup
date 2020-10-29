@@ -4,42 +4,38 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-public class PageFragment extends Fragment {
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class LandingPage extends Fragment {
     private static final String TAG = "LandingPage";
 
     private ViewGroup viewGroup;
-    private OnClickListener callback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(
-                R.layout.slide_page_1, container, false);
+                R.layout.timer_view, container, false);
         setEventTrackers();
         return viewGroup;
     }
 
+    private void addPage() {
+
+    }
+
     private void setEventTrackers() {
-        Log.i(TAG, "setEventTrackers");
         viewGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "onClick");
-                callback.onLandingPageClick();
+                addPage();
             }
         });
-    }
-
-    public void setOnClickListener(OnClickListener callback) {
-        Log.i(TAG, "setOnClickListener");
-        this.callback = callback;
-    }
-
-    public interface OnClickListener {
-        void onLandingPageClick();
     }
 }

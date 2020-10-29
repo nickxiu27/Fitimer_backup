@@ -75,6 +75,8 @@ public class TimerImpl extends Fragment implements BaseTimerInterface {
         isRunning = false;
         timer.cancel();
         currentTextViewSeconds = 0;
+        cumulativeStartingTime = 0;
+        cumulativeRunningTime = 0;
         setTextView();
     }
 

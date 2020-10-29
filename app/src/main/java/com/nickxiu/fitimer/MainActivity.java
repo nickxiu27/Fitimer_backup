@@ -1,11 +1,17 @@
 package com.nickxiu.fitimer;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PageFragment.OnClickListener {
+    private static final String TAG = "MainActivity";
+
+    private TimerFragmentPagerAdapter adapter;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,21 +28,25 @@ public class MainActivity extends AppCompatActivity {
         // Removing nav bar according to new design
         // View.inflate(this, R.layout.nav_bar, (ViewGroup) findViewById(R.id.nav_bar_container));
 
-        ViewPager viewPager
-                = findViewById(
-                R.id.view_pager);
+        viewPager = findViewById(R.id.view_pager);
 
         // Create an adapter that
         // knows which fragment should
         // be shown on each page
-        TimerFragmentPagerAdapter
-                adapter
-                = new TimerFragmentPagerAdapter(
-                getSupportFragmentManager());
+        adapter = new TimerFragmentPagerAdapter(getSupportFragmentManager());
 
         // Set the adapter onto
         // the view pager
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        Log.i(TAG, "onAttachFragment");
+        if (fragment instanceof PageFragment) {
+            PageFragment pageFragment = (PageFragment) fragment;
+            pageFragment.setOnClickListener(this);
+        }
     }
 
     @Override
@@ -49,5 +59,12 @@ public class MainActivity extends AppCompatActivity {
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
+    }
+
+    @Override
+    public void onLandingPageClick() {
+        Log.i(TAG, "onLandingPageClick");
+        adapter.initializeTimer();
+        viewPager.setCurrentItem(0);
     }
 }
