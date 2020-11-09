@@ -6,18 +6,22 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements PageFragment.OnClickListener {
+public class MainActivity extends AppCompatActivity implements LandingPage.OnClickListener {
     private static final String TAG = "MainActivity";
 
     private TimerFragmentPagerAdapter adapter;
     private ViewPager viewPager;
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        hideStatusBar();
+        setWindowManagerFlags();
+        toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
         // FrameLayout mainContainer = findViewById(R.id.main_container);
         // View.inflate(this, R.layout.timer_view, (ViewGroup) findViewById(R.id.main_container));
@@ -38,33 +42,54 @@ public class MainActivity extends AppCompatActivity implements PageFragment.OnCl
         // Set the adapter onto
         // the view pager
         viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.i(TAG, String.format("get item: %d", position));
+                toast.setText(adapter.getPageTitle(position));
+                toast.show();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
     }
 
     @Override
     public void onAttachFragment(Fragment fragment) {
         Log.i(TAG, "onAttachFragment");
-        if (fragment instanceof PageFragment) {
-            PageFragment pageFragment = (PageFragment) fragment;
-            pageFragment.setOnClickListener(this);
+        if (fragment instanceof LandingPage) {
+            LandingPage landingPage = (LandingPage) fragment;
+            landingPage.setContext(this);
+            landingPage.setOnClickListener(this);
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        hideStatusBar();
-    }
-
-    private void hideStatusBar() {
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
+    private void setWindowManagerFlags() {
+        // Use the background of the app behind the status bar and nav bar.
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
 
     @Override
-    public void onLandingPageClick() {
-        Log.i(TAG, "onLandingPageClick");
-        adapter.initializeTimer();
-        viewPager.setCurrentItem(0);
+    public void createTimer() {
+        Log.i(TAG, "createTimer");
+        if (!adapter.hasTimer()) {
+            adapter.initializeTimer();
+        }
+        viewPager.setCurrentItem(adapter.getTimerIndex());
+    }
+
+    @Override
+    public void createFitTimer() {
+        Log.i(TAG, "createFitTimer");
+        if (!adapter.hasFitTimer()) {
+            adapter.initializeFitTimer();
+        }
+        viewPager.setCurrentItem(adapter.getFitTimerIndex());
     }
 }
